@@ -1,29 +1,38 @@
+const jwt_decode = require('jwt-decode')
 const express = require('express')
 const router = express.Router()
 const axios = require('axios')
 
-router.post('/getInfo', (req, res) => {
-  if (!req.body.city) {
+router.post('/userInfo', (req, res) => {
+  if (!req.body.idToken) {
     return res.status(400).json({
       error: 'missing required parameters. refer documentation'
     })
   }
 
-  if (!req.body.region) {
+  const data = jwt_decode(req.body.idToken)
+
+  return res.status(200).json({
+    userData: data
+  })
+})
+
+router.post('/tasklist', (req, res) => {
+  if (!req.body.idToken) {
     return res.status(400).json({
       error: 'missing required parameters. refer documentation'
     })
   }
 
-  if (!req.body.countryCode) {
-    return res.status(400).json({
-      error: 'missing required parameters. refer documentation'
-    })
-  }
+  const auth = 'Bearer ' + req.body.idToken
+  const url = 'https://tasks.googleapis.com/tasks/v1/users/@me/lists'
 
-  const weatherURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + req.body.city + ',' + req.body.region + ',' + req.body.countryCode + '&appid=' + process.env.OPENWEATHERAPIKEY
-
-  axios.get(weatherURL)
+  axios.get(url, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: auth
+    }
+  })
     .then((response) => {
       return res.status(200).json({
         status: 200,
