@@ -18,14 +18,14 @@ router.post('/userInfo', (req, res) => {
 })
 
 router.post('/tasklist', (req, res) => {
-  if (!req.body.idToken) {
+  if (!req.body.accessToken) {
     return res.status(400).json({
       error: 'missing required parameters. refer documentation'
     })
   }
 
-  const auth = 'Bearer ' + req.body.idToken
-  const url = 'https://tasks.googleapis.com/tasks/v1/users/@me/lists'
+  const auth = 'Bearer ' + req.body.accessToken
+  const url = 'https://tasks.googleapis.com/tasks/v1/users/@me/lists?key=' + process.env.GTASKSAPIKEY
 
   axios.get(url, {
     headers: {
