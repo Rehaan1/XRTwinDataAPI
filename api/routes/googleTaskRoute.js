@@ -134,7 +134,7 @@ router.post('/createTask', (req, res) => {
     })
 })
 
-router.delete('/deleteTask', (req, res) => {
+router.post('/deleteTask', (req, res) => {
   if (!req.body.accessToken) {
     return res.status(400).json({
       error: 'missing required parameters. refer documentation'
